@@ -1,5 +1,5 @@
-
-
+#Cryptocurrency Data Analyzer 
+#Luke Evans
 #library imports
 import pandas as pd
 import requests
@@ -8,7 +8,7 @@ import bs4 as bs
 #variable declarations to obtain trending crypto information from webpage into separate arrays
 page = requests.get('https://coinmarketcap.com/best-cryptos/')
 soup = bs.BeautifulSoup(page.text, "html.parser")
-tables = soup.find(class_="sc-1kzt9sl-1 eLgweq")
+tables = soup.find(class_="sc-f5c7acb4-1 kbhRSH")
 trendingCryptos = tables.find_all("tr")
 trendingCryptoPrices = []
 trendingCryptoNames = []
@@ -24,7 +24,7 @@ for container in trendingCryptos:
 #gets the name of the trending cryptocurrency
 for container in trendingCryptos:
     try:
-        name = container.find(class_="sc-14rfo7b-0 lhJnKD").text.strip()
+        name = container.find(class_="sc-e225a64a-0 ePTNty").text.strip()
     except:
         name = ''
     finally:
@@ -40,7 +40,7 @@ print(trendingCryptoNames)
 # from webpage into separate arrays
 page1 = requests.get('https://coinmarketcap.com/gainers-losers/')
 soup1 = bs.BeautifulSoup(page1.text, "html.parser")
-positiveTable = soup1.find(class_="sc-1yw69nc-0 DaVcG table-wrap")
+positiveTable = soup1.find(class_="sc-c9a1573c-0 bmhBDj table-wrap")
 positiveCryptos = positiveTable.find_all("tr")
 positivePrices = []
 positiveNames = []
@@ -49,43 +49,47 @@ positiveVolume = []
 
 #gets the price of the growing cryptocurrency
 for container in positiveCryptos:
-    try:
-        price = container.find('span').text.strip()
-    except:
-        price = ''
-    finally:
-        positivePrices.append(price)
+    if len(positivePrices) < 31:
+        try:
+            price = container.find('span').text.strip()
+        except:
+            price = ''
+        finally:
+            positivePrices.append(price)
 
 #gets the name of the positive cryptocurrency
 for container in positiveCryptos:
-    try:
-        name = container.find(class_="sc-14rfo7b-0 lhJnKD").text.strip()
-    except:
-        name = ''
-    finally:
-        positiveNames.append(name)
+    if len(positiveNames) < 31:
+        try:
+            name = container.find(class_="sc-e225a64a-0 ePTNty").text.strip()
+        except:
+            name = ''
+        finally:
+            positiveNames.append(name)
 
 #gets the percent increase of the positive growth cryptocurrency
 for container in positiveCryptos:
-    try:
-        percentIncrease = container.find(class_="sc-15yy2pl-0 kAXKAX").text.strip()
-    except:
-        percentIncrease = ''
-    finally:
-        percentIncreases.append(percentIncrease)
+    if len(percentIncreases) < 31:
+        try:
+            percentIncrease = container.find(class_="sc-97d6d2ca-0 cYiHal").text.strip()
+        except:
+            percentIncrease = ''
+        finally:
+            percentIncreases.append(percentIncrease)
 
 #gets the volume of the growing cryptocurrency
 for container in positiveCryptos:
-    try:
-        ch = "%"
-        positiveCryptoVolume = container.findNext("tr").text.strip()
-        cryptoString = positiveCryptoVolume.split(ch, 1)
-        if len(cryptoString) > 0:
-            positiveCryptoVolume = cryptoString[1]
-    except:
-        positiveCryptoVolume = ""
-    finally:
-        positiveVolume.append(positiveCryptoVolume)
+    if len(positiveVolume) < 30:
+        try:
+            ch = "%"
+            positiveCryptoVolume = container.findNext("tr").text.strip()
+            cryptoString = positiveCryptoVolume.split(ch, 1)
+            if len(cryptoString) > 0:
+                positiveCryptoVolume = cryptoString[1]
+        except:
+            positiveCryptoVolume = ""
+        finally:
+            positiveVolume.append(positiveCryptoVolume)
 
 #gets rid of empty elements and prints names
 positiveNames.pop(0)
@@ -101,9 +105,9 @@ negativeNames = []
 percentDecreases = []
 negativeVolumes = []
 
-table = soup1.find(class_="sc-1yw69nc-0 DaVcG table-wrap")
+table = soup1.find(class_="sc-c9a1573c-0 bmhBDj table-wrap")
 negativeTable = table.find_all_next(class_="uikit-col-md-8 uikit-col-sm-16")[-1]
-negativeCryptos = negativeTable.findAll("tr")
+negativeCryptos = negativeTable.find_all("tr")
 
 #gets the price of the negative cryptocurrency
 for container in negativeCryptos:
@@ -117,7 +121,7 @@ for container in negativeCryptos:
 #gets the name of the negative cryptocurrency
 for container in negativeCryptos:
     try:
-        name = container.findNext(class_="sc-14rfo7b-0 lhJnKD").text.strip()
+        name = container.findNext(class_="sc-e225a64a-0 ePTNty").text.strip()
     except:
         name = ''
     finally:
@@ -126,7 +130,7 @@ for container in negativeCryptos:
 #gets the percent decrease of the negative cryptocurrency
 for container in negativeCryptos:
     try:
-        percentDecrease = container.findNext(class_="sc-15yy2pl-0 hzgCfk").text.strip()
+        percentDecrease = container.findNext(class_="sc-97d6d2ca-0 bQjSqS").text.strip()
     except:
         percentDecrease = ''
     finally:
@@ -171,4 +175,3 @@ df1.columns = newColumns
 
 #output dataframe to csv
 df1.to_csv('cryptoData.csv', index=False, encoding='utf-8')
-
